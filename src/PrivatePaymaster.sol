@@ -24,7 +24,7 @@ contract PrivatePaymaster is BasePaymaster {
       */
     function _validatePaymasterUserOp(UserOperation calldata userOp, bytes32 /*userOpHash*/, uint256 requiredPreFund)
     internal view override returns (bytes memory context, uint256 validationData) {
-        
+        // TODO: make sure the paymaster is going to pay for the gas fee
     }
 
     // when constructing an account, validate constructor code and parameters
@@ -42,7 +42,7 @@ contract PrivatePaymaster is BasePaymaster {
      * and the transaction should succeed there.
      */
     function _postOp(PostOpMode mode, bytes calldata context, uint256 actualGasCost) internal override {
-
+        // TODO: redeem gas fee
     }
     
 }
