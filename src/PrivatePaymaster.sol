@@ -4,16 +4,21 @@ pragma solidity ^0.8.13;
 import { BasePaymaster } from "account-abstraction/core/BasePaymaster.sol";
 import { IEntryPoint } from "account-abstraction/interfaces/IEntryPoint.sol";
 import { UserOperation } from "account-abstraction/interfaces/UserOperation.sol";
+import { MockMixer } from "./MockMixer.sol";
 
 contract PrivatePaymaster is BasePaymaster {
+
+    uint256 public constant PAYMASTER_FEE = 0.01 ether;
 
     //calculated cost of the postOp
     uint256 constant public COST_OF_POST = 15000;
 
     address public immutable theFactory;
+    MockMixer public mixer;
 
-    constructor(address accountFactory, IEntryPoint _entryPoint) BasePaymaster(_entryPoint) {
-        theFactory = accountFactory;
+    constructor(address _factoryAddress, address _mixerAddress, IEntryPoint _entryPoint) BasePaymaster(_entryPoint) {
+        theFactory = _factoryAddress;
+        mixer = MockMixer(_mixerAddress);
     }
 
     /**
@@ -42,7 +47,13 @@ contract PrivatePaymaster is BasePaymaster {
      * and the transaction should succeed there.
      */
     function _postOp(PostOpMode mode, bytes calldata context, uint256 actualGasCost) internal override {
-        // TODO: redeem gas fee
+        // redeem gas fee
+        if (mode != PostOpMode.postOpReverted) {
+            (address account, uint256 withdrawAmount) = abi.decode(context, (address, uint256));
+            uint256 amount = withdrawAmount - PAYMASTER_FEE;
+            (bool success, ) = payable(account).call{ value: amount }("");
+            require(success, "error");
+        }
     }
     
 }
