@@ -28,8 +28,31 @@ contract PrivatePaymaster is BasePaymaster {
       * (since the paymaster is also the token, there is no notion of "approval")
       */
     function _validatePaymasterUserOp(UserOperation calldata userOp, bytes32 /*userOpHash*/, uint256 requiredPreFund)
-    internal view override returns (bytes memory context, uint256 validationData) {
-        // TODO: make sure the paymaster is going to pay for the gas fee
+    internal override returns (bytes memory context, uint256 validationData) {
+        // decode proof sent to the mixer for withdrawal
+        bytes32 root = bytes32(userOp.paymasterAndData[20:52]);
+        bytes32[2] memory inputNullifiers = [bytes32(userOp.paymasterAndData[52:84]), bytes32(userOp.paymasterAndData[84:116])];
+        bytes32[2] memory outputCommitments = [bytes32(userOp.paymasterAndData[116:148]), bytes32(userOp.paymasterAndData[148:180])];
+        address recipient = address(bytes20(userOp.paymasterAndData[180:200]));
+        int256 extAmount = abi.decode(userOp.paymasterAndData[200:232], (int256));
+        bytes memory proof = bytes(userOp.paymasterAndData[232:]);
+        
+        address account = userOp.sender;
+        bytes memory _context = abi.encode(account, extAmount);
+
+        /// @dev should we use try catch statement here, or just let the transaction reverts if invalid proof is provided
+        try mixer.transact(MockMixer.Proof(
+            proof, 
+            root, 
+            inputNullifiers, 
+            outputCommitments, 
+            recipient, 
+            extAmount
+        )) {
+            return (_context, 0);
+        } catch {
+            return ("", 0);
+        }
     }
 
     // when constructing an account, validate constructor code and parameters
@@ -49,8 +72,8 @@ contract PrivatePaymaster is BasePaymaster {
     function _postOp(PostOpMode mode, bytes calldata context, uint256 actualGasCost) internal override {
         // redeem gas fee
         if (mode != PostOpMode.postOpReverted) {
-            (address account, uint256 withdrawAmount) = abi.decode(context, (address, uint256));
-            uint256 amount = withdrawAmount - PAYMASTER_FEE;
+            (address account, int256 withdrawAmount) = abi.decode(context, (address, int256));
+            uint256 amount = uint256(withdrawAmount) - PAYMASTER_FEE;
             (bool success, ) = payable(account).call{ value: amount }("");
             require(success, "error");
         }
