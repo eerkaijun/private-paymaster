@@ -12,7 +12,7 @@ contract MockMixerTest is Test {
     uint256 amount = 10 ether;
 
     function setUp() public {
-        token = new MockToken("USDC", "USDC");
+        token = new MockToken();
         mixer = new MockMixer(address(token));
         token.mint(address(mixer), amount);
     }
