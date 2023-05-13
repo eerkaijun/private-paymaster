@@ -8,3 +8,4 @@ We implement an ERC-4337 compatible paymaster that pays for the deployment of a 
 
 1. To compile the contracts, run `forge build`. 
 2. To run the contracts, run `forge test`.
+3. To deploy the contracts, run `forge create --rpc-url <your_rpc_url> --private-key <your_private_key> src/PrivatePaymaster.sol:PrivatePaymaster`.
