@@ -12,8 +12,8 @@ contract MockMixer {
         bytes32 root;
         bytes32[2] inputNullifiers;
         bytes32[2] outputCommitments;
-        address recipient;
-        int256 extAmount;
+        address recipient; // smart account address that we want to deploy
+        int256 extAmount; // amount to withdraw
     }
 
     constructor(address _tokenAddress) {
