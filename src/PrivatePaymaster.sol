@@ -4,16 +4,19 @@ pragma solidity ^0.8.13;
 import { BasePaymaster } from "account-abstraction/core/BasePaymaster.sol";
 import { IEntryPoint } from "account-abstraction/interfaces/IEntryPoint.sol";
 import { UserOperation } from "account-abstraction/interfaces/UserOperation.sol";
+import { MockMixer } from "./MockMixer.sol";
 
 contract PrivatePaymaster is BasePaymaster {
+
+    uint256 public constant PAYMASTER_FEE = 0.01 ether;
 
     //calculated cost of the postOp
     uint256 constant public COST_OF_POST = 15000;
 
-    address public immutable theFactory;
+    MockMixer public mixer;
 
-    constructor(address accountFactory, IEntryPoint _entryPoint) BasePaymaster(_entryPoint) {
-        theFactory = accountFactory;
+    constructor(address _mixerAddress, IEntryPoint _entryPoint) BasePaymaster(_entryPoint) {
+        mixer = MockMixer(_mixerAddress);
     }
 
     /**
@@ -23,15 +26,31 @@ contract PrivatePaymaster is BasePaymaster {
       * (since the paymaster is also the token, there is no notion of "approval")
       */
     function _validatePaymasterUserOp(UserOperation calldata userOp, bytes32 /*userOpHash*/, uint256 requiredPreFund)
-    internal view override returns (bytes memory context, uint256 validationData) {
-        // TODO: make sure the paymaster is going to pay for the gas fee
-    }
+    internal override returns (bytes memory context, uint256 validationData) {
+        // decode proof sent to the mixer for withdrawal
+        bytes32 root = bytes32(userOp.paymasterAndData[20:52]);
+        bytes32[2] memory inputNullifiers = [bytes32(userOp.paymasterAndData[52:84]), bytes32(userOp.paymasterAndData[84:116])];
+        bytes32[2] memory outputCommitments = [bytes32(userOp.paymasterAndData[116:148]), bytes32(userOp.paymasterAndData[148:180])];
+        address recipient = address(bytes20(userOp.paymasterAndData[180:200]));
+        int256 extAmount = abi.decode(userOp.paymasterAndData[200:232], (int256));
+        bytes memory proof = bytes(userOp.paymasterAndData[232:]);
+        
+        address account = userOp.sender;
+        bytes memory _context = abi.encode(account, extAmount);
 
-    // when constructing an account, validate constructor code and parameters
-    // we trust our factory (and that it doesn't have any other public methods)
-    function _validateConstructor(UserOperation calldata userOp) internal virtual view {
-        address factory = address(bytes20(userOp.initCode[0 : 20]));
-        require(factory == theFactory, "TokenPaymaster: wrong account factory");
+        /// @dev should we use try catch statement here, or just let the transaction reverts if invalid proof is provided
+        try mixer.transact(MockMixer.Proof(
+            proof, 
+            root, 
+            inputNullifiers, 
+            outputCommitments, 
+            recipient, 
+            extAmount
+        )) {
+            return (_context, 0);
+        } catch {
+            return ("", 0);
+        }
     }
 
     /**
@@ -42,7 +61,13 @@ contract PrivatePaymaster is BasePaymaster {
      * and the transaction should succeed there.
      */
     function _postOp(PostOpMode mode, bytes calldata context, uint256 actualGasCost) internal override {
-        // TODO: redeem gas fee
+        // redeem gas fee
+        if (mode != PostOpMode.postOpReverted) {
+            (address account, int256 withdrawAmount) = abi.decode(context, (address, int256));
+            uint256 amount = uint256(withdrawAmount) - PAYMASTER_FEE;
+            (bool success, ) = payable(account).call{ value: amount }("");
+            require(success, "error");
+        }
     }
     
 }

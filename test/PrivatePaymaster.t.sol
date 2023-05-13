@@ -5,5 +5,11 @@ import "forge-std/Test.sol";
 import "../src/PrivatePaymaster.sol";
 
 contract PrivatePaymasterTest is Test {
+
+    PrivatePaymaster public paymaster;
+
+    function setUp() public {
+        // paymaster = new PrivatePaymaster();
+    }
     
 }

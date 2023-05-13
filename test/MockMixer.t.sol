@@ -15,7 +15,7 @@ contract MockMixerTest is Test {
     address recipientAddress = 0x6201df57Cb9f15B1232cF333a78926A303f6Bbac;
 
     function setUp() public {
-        token = new MockToken("USDC", "USDC");
+        token = new MockToken();
         mixer = new MockMixer(address(token));
         token.mint(address(mixer), amount);
     }
