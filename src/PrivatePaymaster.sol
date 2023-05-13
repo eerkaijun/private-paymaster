@@ -13,11 +13,9 @@ contract PrivatePaymaster is BasePaymaster {
     //calculated cost of the postOp
     uint256 constant public COST_OF_POST = 15000;
 
-    address public immutable theFactory;
     MockMixer public mixer;
 
-    constructor(address _factoryAddress, address _mixerAddress, IEntryPoint _entryPoint) BasePaymaster(_entryPoint) {
-        theFactory = _factoryAddress;
+    constructor(address _mixerAddress, IEntryPoint _entryPoint) BasePaymaster(_entryPoint) {
         mixer = MockMixer(_mixerAddress);
     }
 
@@ -53,13 +51,6 @@ contract PrivatePaymaster is BasePaymaster {
         } catch {
             return ("", 0);
         }
-    }
-
-    // when constructing an account, validate constructor code and parameters
-    // we trust our factory (and that it doesn't have any other public methods)
-    function _validateConstructor(UserOperation calldata userOp) internal virtual view {
-        address factory = address(bytes20(userOp.initCode[0 : 20]));
-        require(factory == theFactory, "TokenPaymaster: wrong account factory");
     }
 
     /**
