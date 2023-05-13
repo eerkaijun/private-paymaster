@@ -42,7 +42,7 @@ contract MockMixer {
 
             token.transfer(
                 _proof.recipient,
-                uint256(_proof.extAmount)
+                uint256(-_proof.extAmount)
             );
         }
     }
