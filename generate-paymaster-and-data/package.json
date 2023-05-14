@@ -1,0 +1,41 @@
+{
+  "name": "private-paymaster",
+  "version": "0.1.0",
+  "description": "-",
+  "bin": {
+    "private-paymaster": "./bin/private-paymaster"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node src/index.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "ethers": "^6.3.0",
+    "enquirer": "^2.3.6",
+    "cli-spinners": "^2.9.0",
+    "cli-spinner": "^0.2.10",
+    "@slimio/async-cli-spinner": "^0.5.2",
+    "circomlib": "git+https://github.com/tornadocash/circomlib.git#3b492f9801573eebcfe1b6c584afe8a3beecf2b4",
+    "fixed-merkle-tree": "^0.6.1",
+    "snarkjs": "git+https://github.com/tornadocash/snarkjs.git#869181cfaf7526fe8972073d31655493a04326d5",
+    "web3": "^1.6.1",
+    "websnark": "git+https://github.com/tornadocash/websnark.git#4c0af6a8b65aabea3c09f377f63c44e7a58afa6d"
+  },
+  "devDependencies": {
+    "@typechain/ethers-v6": "^0.3.0",
+    "@types/jest": "^27.0.0",
+    "jest": "^27.0.0",
+    "ts-jest": "^27.0.0",
+    "ts-node": "^10.0.0",
+    "typechain": "^8.1.1",
+    "typescript": "^5.0.4",
+    "dotenv": "^16.0.3"
+  },
+  "license": "MIT"
+}
