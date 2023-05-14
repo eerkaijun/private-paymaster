@@ -16,3 +16,9 @@ Test contracts are deployed on the Sepolia testnet:
 1. MockToken: `0xA76AE5A1BE9BCd287e884Cc39C4Dd0EBfecc0E7c`
 2. MockMixer: `0xA836380122e58Dff60D3404d8994671b0eF6CCd8`
 3. PrivatePaymaster: `0x08fbF62FE4973C36550F7dD71757e9ECb63b137E`
+
+Other deployments of PrivatePaymaster to support the multichain future: 
+1. Optimism Goerli: `0x5B21e28119069aED609595c99Cb78f5dfE2DC004`
+2. Polygon Mumbai: `0x27d4D43e89FB920F063Df7Bf711bfc48c3dAfF5F`
+3. Gnosis Chain: `0xEFfDC753F92D784ff0A51EB43e191dD7aB13DB9a`
+4. Linea: `0xEFfDC753F92D784ff0A51EB43e191dD7aB13DB9a`
