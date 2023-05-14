@@ -10,6 +10,8 @@ We implement an ERC-4337 compatible paymaster that pays for the deployment of a 
 2. To run the contracts, run `forge test`.
 3. To deploy the contracts, run `forge create --rpc-url <your_rpc_url> --private-key <your_private_key> src/PrivatePaymaster.sol:PrivatePaymaster`.
 
+The `cli` folder contains scripts to generate the paymaster data to be included in the UserOp.
+
 ### Deployed Addresses
 
 Test contracts are deployed on the Sepolia testnet:
@@ -22,7 +24,6 @@ Other deployments of PrivatePaymaster to support the multichain future:
 2. Polygon Mumbai: `0x27d4D43e89FB920F063Df7Bf711bfc48c3dAfF5F`
 3. Gnosis Chain: `0xEFfDC753F92D784ff0A51EB43e191dD7aB13DB9a`
 4. Linea: `0xEFfDC753F92D784ff0A51EB43e191dD7aB13DB9a`
-
 
 ### Trampoline Fork
 https://github.com/eerkaijun/trampoline
