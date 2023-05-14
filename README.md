@@ -24,6 +24,8 @@ Other deployments of PrivatePaymaster to support the multichain future:
 2. Polygon Mumbai: `0x27d4D43e89FB920F063Df7Bf711bfc48c3dAfF5F`
 3. Gnosis Chain: `0xEFfDC753F92D784ff0A51EB43e191dD7aB13DB9a`
 4. Linea: `0xEFfDC753F92D784ff0A51EB43e191dD7aB13DB9a`
+5. Mantle Testnet: `0x4F45a6E3b37aA10bcC7f9bdFAb04A97a3b52Ac4b`
+6. Scroll Testnet: `0xd4a8EE6a3870119acC742c7D5392D30d9A6d1D17`
 
 ### Trampoline Fork
 https://github.com/eerkaijun/trampoline
