@@ -4,6 +4,8 @@ When users withdraw funds from a shielded pool or privacy preserving rollup, the
 
 We implement an ERC-4337 compatible paymaster that pays for the deployment of a smart account and the gas fee for the funds withdrawal. The user can generate the withdrawal proof as usual, then parse this proof to be the paymaster data in the correct format. Subsequently, the user then submits a UserOp operation for the bundler to execute the transaction.
 
+For further information, check out the [project page](https://ethglobal.com/showcase/privacy-preserving-paymaster-hap9s) from ETH Global Lisbon. This project won the best account abstraction hack from Ethereum Foundation.
+
 ### Getting Started
 
 1. To compile the contracts, run `forge build`. 
